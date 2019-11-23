@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>修改图书信息</title>
+</head>
+<style type="text/css">
+body {
+    background-repeat: no-repeat;/*平铺  */
+    background-attachment: fixed;/* 背景图像不会随其页面滚动 */
+    background-position: center;/* 背景图像居中 */
+    text-align: center;/* 字居中 */
+    margin: 0px auto;
+}
+
+
+
+<body bgcolor="#FFA500" background="tt.jpg">
+</style>
+<body>
+<form action="update.jsp" method="post">
+        <table align="center" width="30%" border="1">
+            <caption>
+                <font face=" ">修改图书信息</font>
+            </caption>
+            <tr>
+                <th width="30%">书号：</th>
+                <td width="70%"><input id="id" type="text"
+                    readonly="readonly">不可更改</td>
+            </tr>
+            
+            <tr>
+                <th>书名：</th>
+                <td><input id="name" type="text" placeholder="请输入书名">*</td>
+            </tr>
+            <tr>
+                <th>作者：</th>
+                <td><input id="author" type="text" 
+                   placeholder="请输入作者"></td>
+            </tr>
+            <tr>
+                <th>数量：</th>
+                <td><input id="num" type="text"
+                    placeholder="请输入数量"></td>
+            </tr>
+            <tr>
+                <th>类型：</th>
+                <td><input id="type" type="text"
+                    placeholder="请输入书的类型"></td>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="hidden" > 
+                <input type="button" value="修改" onclick="save()"
+                    style="width: 70px;"> </th>
+            </tr>
+        </table>
+    </form>
+</body>
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+
+<script
+	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+var token = sessionStorage.getItem("token");
+query();
+function query()
+{
+	var editId = sessionStorage.getItem("editId");
+	
+	$.ajax({
+		type : "get",
+		url : "../book/detail",
+		contentType : "application/json;charset=utf-8",
+		data : {"id":editId},
+		headers:{"token":token},
+		dataType : "json",
+		success : function(data) {
+			var result=data.result;
+			if(data.status==0){
+				$("#id").val(result.id);
+				$("#name").val(result.bookName);
+				$("#author").val(result.bookAuther);
+				$("#num").val(result.num);
+				$("#type").val(result.type);
+				
+			}else{
+				alert(data.message);
+				return;
+			}
+            
+			
+		}
+	});
+}
+
+	function save() {
+		
+		
+		var id = $("#id").val();
+		var bookName = $("#name").val();
+		var author = $("#author").val();
+		var num = $("#num").val();
+		var type = $("#type").val();
+		
+		var data = {"id":id,"bookName":bookName,"bookAuthor":author,"num":num,"type":type};
+		$.ajax({
+			type : "POST",
+			url : "../book/edit",
+			contentType : "application/json;charset=utf-8",
+			headers:{'token':sessionStorage.getItem("token")},
+			data : JSON.stringify(data),
+			dataType : "json",
+			success : function(result) {
+			if (result.status==0){
+				alert("提交成功");
+				sessionStorage.removeItem("editId");
+				location.href="list.html";
+			}else
+			{
+				alert(result.message);
+				
+			}
+			},
+			error : function(message) {
+				alert("提交失败" );
+			}
+		});
+
+	}
+</script>
+</html>

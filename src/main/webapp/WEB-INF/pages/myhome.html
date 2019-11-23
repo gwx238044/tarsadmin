@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>个人中心</title>
+</head>
+<body>
+    <form>
+         <button type="button"  onclick="query()" class="btn btn-success">借书记录</button> 
+         <button type="button" onclick="goBorrow()" class="btn btn-info">去借书</button>
+         
+
+    </form>
+</body>
+<script>
+function query(){
+	
+	location.href="customerRecord.html";
+	
+}
+
+function goBorrow(){
+	location.href="rentbook.html";
+}
+
+</script>
+</html>

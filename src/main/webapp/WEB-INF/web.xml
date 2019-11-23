@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://java.sun.com/xml/ns/javaee"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	id="WebApp_ID" version="3.0">
+   
+   <display-name>Spring mvc Application</display-name>
+   <servlet>
+   <servlet-name>HelloWeb</servlet-name>
+   <servlet-class>
+   org.springframework.web.servlet.DispatcherServlet
+   </servlet-class>
+   <load-on-startup>1</load-on-startup>
+   </servlet>
+   
+   <servlet-mapping>
+   <servlet-name>HelloWeb</servlet-name>
+   <url-pattern>/</url-pattern>
+   </servlet-mapping>
+   
+   <!-- 如何配置Servlet中的<url-pattern>
+使用‘/’开头，使用‘/*’结尾，表示使用路径匹配，比如/foo/bar/*
+
+使用'*.xxx'表示使用后缀匹配；
+
+只使用‘/*’，表示匹配所有的请求；
+
+只使用'/'，表示是一个默认的Servlet；
+ 
+除此之外，其他的字符都是准确匹配；
+————————————————
+
+   -->
+  <!-- 监听器的配置  -->
+   <context-param>
+   <param-name>contextConfigLocation</param-name>
+   <param-value>/WEB-INF/HelloWeb-servlet.xml</param-value>
+   <!-- 指定servlet.xml需要配置 -->
+</context-param>
+<listener>
+   <listener-class>
+      org.springframework.web.context.ContextLoaderListener
+   </listener-class>
+</listener>
+
+
+<absolute-ordering/>
+   </web-app>

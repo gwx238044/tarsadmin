@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>图书列表</title>
+</head>
+<body>
+<div class="input-group" style="width:200px;margin:10px" >
+			<span class="input-group-addon">书名：</span>
+			<input id="searchName" type="text" class="form-control" placeholder="书名">
+		</div>
+		<div class="input-group" style="width:200px;margin:10px">
+			<span class="input-group-addon">作者：</span>
+			<input id="searchAuthor" type="text" class="form-control" placeholder="作者">
+		</div>
+<button onclick="query()" type="button" class="btn btn-info">查询</button>
+<button onclick="toAdd()" type="button" class="btn btn-success">新增</button>
+<table class="table table-bordered">
+    <caption>图书列表</caption>
+    <thead>
+        <tr>
+            <th>ID</th>
+            <th>书名</th>
+            <th>作者</th>
+            <th>类型</th>
+            <th>数量</th>
+            <th>插入时间</th>
+            <th>更新时间</th>
+            <th>操作</th>
+        </tr>
+    </thead>
+    <tbody id="bookList">
+       
+    </tbody>
+</table>
+​
+	
+</body>
+
+<!-- jQuery文件。务必在bootstrap.min.js 之前引入 -->
+
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+
+<script
+	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+query();
+	function query() {
+		$("#bookList")[0].innerHTML='';/*清空图书列表  */
+		$.ajax({
+			type : "GET",
+			url : "../book/list",
+			contentType : "application/json;charset=utf-8",
+            headers:{'token':sessionStorage.getItem("token")},
+			data : {"bookName":$("#searchName").val(),"bookAuther":$("#searchAuthor").val()},
+			dataType : "json",
+			success : function(data) {
+				var status = data.status;
+				if (status != 0)
+					{
+					alert(data.message);
+					return;
+					}
+				var result = data.result;
+				var length = result.length;
+				var str ='';
+				for (var i =0;i<length;i++)
+				{
+					var resultIndex = result[i];
+					str += '<tr>';
+					str += '<td>'+resultIndex.id+'</td>';
+					str += '<td style="color: cornflowerblue;">'+resultIndex.bookName+'</td>';
+					str += '<td>'+resultIndex.bookAuther+'</td>';
+					str += '<td>'+resultIndex.type+'</td>';
+					str += '<td>'+resultIndex.num+'</td>';
+					str += '<td>'+resultIndex.insertTime+'</td>';
+					str += '<td>'+resultIndex.updateTime+'</td>';
+					str += '<td><a onclick=toEdit('+resultIndex.id+')>修改</a>'+
+					" "+'<a onclick=deleteData('+resultIndex.id+')>删除</a>'+'</td>';
+					
+					str += '</tr>';
+				}
+				$("#bookList")[0].innerHTML=str;//从jquery转化为Javascript
+			},
+			error : function(message) {
+				alert("提交失败" + JSON.stringify(message));
+			}
+		});
+		
+
+	}
+	function toAdd()
+	{
+		location.href="addlist.html";
+	}
+
+	function toEdit(id)
+	{
+		sessionStorage.setItem("editId",id);
+		location.href="editlist.html";
+	}
+	function deleteData(id){
+		var token = sessionStorage.getItem("token");
+		$.ajax({
+			type : "POST",
+			url : "../book/delete?id="+id,//一个参数的post请求，前端问好拼接参数，后端不加requestBody；
+					                      //多个参数的post请求，前端放json，后端添加@requestBody，用对象接收
+			contentType : "application/json;charset=utf-8",
+			headers:{"token":token},
+			data : {},
+			dataType : "json",
+			success : function(result) {
+				if(result.status==0){
+					alert("删除成功");
+					query();
+				}else{
+					alert(result.message);
+					return;
+				}
+				
+			}
+		
+			
+		});
+		
+		
+	}
+</script>
+</html>

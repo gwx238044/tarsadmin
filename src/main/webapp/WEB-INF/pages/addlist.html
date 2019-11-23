@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>添加图书信息</title>
+</head>
+<style type="text/css">
+body {
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-position: center;
+    text-align: center;
+    margin: 0px auto;
+}
+.bno {
+
+text-align:center;
+}
+</style>
+<body>
+<form>
+        <table align="center" width="30%" border="1">
+            <caption>
+                <font face=" ">添加图书信息</font>
+            </caption>
+            
+            <tr>
+                <th>书名：</th>
+                <td><input id="name" type="text" placeholder="请输入书名"></td>
+            </tr>
+            <tr>
+                <th>作者：</th>
+                <td><input id="author" type="text"
+                   placeholder="请输入作者"></td>
+            </tr>
+            <tr>
+                <th>数量：</th>
+                <td><input id="num" type="text"
+                    placeholder="请输入数量"></td>
+            </tr>
+            <tr>
+                <th>类型：</th>
+                <td><input id="type" type="text"
+                    placeholder="请输入书的类型"></td>
+            </tr>
+            <tr>
+                <th colspan="2"><input type="hidden" > 
+                <input type="button" value="提交" onclick="save()"
+                    style="width: 70px;"> </th>
+            </tr>
+        </table>
+    </form>
+</body>
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+
+<!-- 最新的 Bootstrap 核心 JavaScript 文件 -->
+
+<script
+	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+
+function save(){
+	var  bookName = $("#name").val();
+	var  author = $("#author").val();
+	var  num = $("#num").val();
+	var  type = $("#type").val();
+	var token = sessionStorage.getItem("token");
+	var data = {"bookName":bookName,"bookAuthor":author,"num":num,"type":type};
+	$.ajax({
+		type : "POST",
+		url : "../book/add",
+		contentType : "application/json;charset=utf-8",
+		headers:{"token":token},
+		data :JSON.stringify(data),
+		dataType : "json",
+		success : function(result) {
+		if (result.status==0)
+		{
+			alert("提交成功");
+			location.href="list.html";
+		}else{
+			alert(result.message);
+			return;
+			}
+		},
+		error : function(message) {
+			alert("提交失败" + JSON.stringify(message));
+		}
+	});
+
+	
+}
+</script>
+</html>

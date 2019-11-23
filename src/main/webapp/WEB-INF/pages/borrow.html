@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>图书租赁</title>
+</head>
+<body>
+	<table class="table table-bordered">
+		<caption>图书租赁</caption>
+		<thead>
+			<tr>
+				<td>id</td>
+				<td>书名</td>
+				<td>作者</td>
+				<td>类型</td>
+				<td>总数</td>
+				<td>剩余数量</td>
+                <td>操作</td>
+			</tr>
+		</thead>
+		<tbody id="booklist">
+
+		</tbody>
+	</table>
+</body>
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<script type="text/javascript">
+query();
+function query(){
+	var bookName=sessionStorage.getItem("bookName");
+	var bookAuthor=sessionStorage.getItem("bookAuther");
+	var token=sessionStorage.getItem("token");
+	$("#booklist").empty();//防止第二次查询失败还显示上次的结果。
+	$.ajax({
+		type:"GET",
+		url:"../rent/query",
+		contentType:"application/json;charset=utf-8",
+		headers:{'token':token},
+		data:{"bookName":bookName,"bookAuthor":bookAuthor},
+		dataType:"json",
+		success:function(result){
+			if(result.status==0){
+				var str='';
+				var data=result.result;
+				for(var i=0;i<data.length;i++){
+					var resultIndex=data[i];
+					str+='<tr>';
+					str+='<td>'+resultIndex.id+'</td>';
+					str+='<td>'+resultIndex.bookName+'</td>';
+					str+='<td>'+resultIndex.bookAuthor+'</td>';
+					str+='<td>'+resultIndex.type+'</td>';
+					str+='<td>'+resultIndex.num+'</td>';
+					str+='<td>'+resultIndex.surplusNum+'</td>';
+					str+='<td>'+'<a onclick=rent('+resultIndex.id+')>租赁</a>'+'</td>';
+					str+='<tr>';
+					
+				}
+				$("#booklist")[0].innerHTML =str;
+			}
+			
+			
+			
+			
+		}
+		,
+		error:function(message){
+			alert("查询失败"+JSON.stringify(message));
+		}
+	
+	});
+	
+	
+	
+	
+}
+
+function rent(id){	
+	var token=sessionStorage.getItem("token");
+	var data={"id":id,"token":token};
+	$.ajax({
+		type:"POST",
+		url:"../rent/bookRent",
+		contentType:"application/json;charset=utf-8",
+		headers:{'token':token},
+		data:JSON.stringify(data),
+		dataType:"json",
+	success:function(result){
+		if(result.status == 0 && result){
+			alert("租赁成功");
+			sessionStorage.removeItem("bookName");//防止别人没有输入姓名和作者的时候，利用上次的输入内容，查询并租赁。
+			sessionStorage.removeItem("bookAuther");
+			location.href="rentbook.html";
+			
+		}else{
+			
+			alert("租赁失败");
+			sessionStorage.removeItem("bookName");
+			sessionStorage.removeItem("bookAuther");
+			
+		}
+	},
+		error:function(message){
+			alert("租赁失败"+JSON.stringify(message));
+			sessionStorage.removeItem("bookName");
+			sessionStorage.removeItem("bookAuther");
+		
+	}
+		
+		
+		
+	});
+	
+}
+
+
+</script>
+</html>

@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>图书查询</title>
+<style>/* style 标签一般写在head标签里面 */
+body{
+       background-repreat:no-repeat;
+       background-attachment:fixed;
+       background-position:center;
+       text-align:center;
+       margin:0px auto;
+}
+
+</style>
+</head>
+<body>
+   <form action="update.jsp" method="post">
+        <table align="center" width="30%" border="1">
+            <caption>
+                <font face=" ">图书查询</font>
+            </caption>
+            
+            
+            <tr>
+                <th>书名：</th>
+                <td><input id="bookName" type="text" placeholder="请输入书名"></td>
+            </tr>
+            <tr>
+                <th>作者：</th>
+                <td><input id="author" type="text" 
+                   placeholder="请输入作者"></td>
+            </tr>
+            
+  
+            <tr>
+                <th colspan="2">
+                <input type="button" value="查询" onclick="query()"
+                    style="width: 70px;"> </th>
+            </tr>
+        </table>
+    </form> 
+
+
+
+</body>
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+<script>
+function query(){
+	var bookName=$("#bookName").val();
+	var bookAuther=$("#author").val();
+	sessionStorage.setItem("bookName",bookName);
+	sessionStorage.setItem("bookAuther",bookAuther);
+	location.href="borrow.html";
+	
+}
+
+</script>
+     
+</html>

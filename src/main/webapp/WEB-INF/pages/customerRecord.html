@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>租赁者个人借书记录</title>
+</head>
+<body>
+<table class="table table-bordered">
+		<caption>图书租赁</caption>
+		<thead>
+			<tr>
+				<td>id</td>
+				<td>姓名</td>
+				<td>书名</td>
+				<td>状态</td>
+				<td>借书时间</td>
+				
+			</tr>
+		</thead>
+		<tbody id="booklist">
+
+		</tbody>
+	
+	</table>
+
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+	
+	<script type="text/javascript">
+	query();
+	function query(){
+		var token=sessionStorage.getItem("token");
+		
+		$("#booklist")[0].innerHTML='';
+		$.ajax({
+			type:"GET",
+			url:"../rent/record",
+			contentType:"application/json;charset=utf-8",
+			headers:{'token':token},
+			data:{},
+			dataType:"json",
+			success:function(result){//success代表的是这个接口连接成功，result里面flag是我自己逻辑定义的成功或者失败。
+				if(result.status==0){
+					var str='';
+					var data=result.result;
+					for(var i=0;i<data.length;i++){
+						var resultIndex=data[i];
+						str+='<tr>';
+						str+='<td>'+resultIndex.id+'</td>';
+						str+='<td>'+resultIndex.name+'</td>';
+						str+='<td>'+resultIndex.bookName+'</td>';
+						var status = resultIndex.status;
+						var strstatus ='';
+						if (status == 1)
+						{
+							strstatus ="借书中";
+						}
+						else if (status == 2)
+						{
+							strstatus ="借书成功";
+						}
+						else if (status == 3)
+						{
+							strstatus ="借书失败";
+						}
+						else if (status == 4)
+						{
+							strstatus ="已还书";
+						}
+						str+='<td>'+strstatus+'</td>';
+						str+='<td>'+resultIndex.outTime+'</td>';
+						str+='</tr>';
+					}
+					$("#booklist")[0].innerHTML=str;
+				
+					
+				}else{
+					alert("提交失败！");
+				}
+			}
+			,
+			error:function(message){//error连接接口失败
+				alert("提交失败！"+JSON.stringify(message));
+			}
+			
+			
+			
+		});
+		
+		
+	}
+	
+	
+	</script>
+	
+</body>
+
+
+</html>

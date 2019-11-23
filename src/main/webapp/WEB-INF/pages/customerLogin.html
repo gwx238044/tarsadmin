@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link
+	href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css"
+	rel="stylesheet">
+<title>租赁者登陆</title>
+</head>
+<body>
+	<div style="width: auto;text-align: center;margin: 20% 40%;position: absolute;">
+		<div class="input-group" style="width:200px;text-align:center;margin:20px">
+			<span class="input-group-addon">用户名</span> <input type="text"
+				id="customerName" class="form-control" placeholder="请输入用户名">
+		</div>
+		<div class="input-group" style="width:200px;margin:20px">
+			<span class="input-group-addon">密&nbsp;&nbsp;&nbsp;&nbsp;码</span> <input type="text"
+				id="passWord" class="form-control" placeholder="请输入密码">
+		</div>
+
+		<button type="button" class="btn btn-primary" onclick="login()" style="width:100px">登录</button>
+	</div>
+</body>
+<script src="https://cdn.staticfile.org/jquery/2.1.1/jquery.min.js"></script>
+<script
+	src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script>
+sessionStorage.removeItem("cutomerToken");
+function login(){
+	var customerName=$("#customerName").val();
+	var passWord=$("#passWord").val();
+	$.ajax({
+		type:"POST",
+		url:"CustomerLogin",
+		contentType:"application/json,charset=utf-8",
+		data:JSON.stringify({
+			"name":customerName,
+			"passWord":passWord
+		}),
+		dataType:"json",
+		success:function (message){
+			if(message.success){
+				alert("登陆成功");
+				sessionStorage.setItem("customerToken",message.data);
+				location.href="myhome.html";
+			}else{
+				alert("登陆失败");
+			}
+			
+		},
+		error:function(message){
+			alert("提交失败"+JSON.stringify(message));
+		}
+		
+		
+		
+	});
+}
+
+
+
+
+
+</script>
+</html>
